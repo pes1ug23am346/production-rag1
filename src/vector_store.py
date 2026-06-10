@@ -35,9 +35,8 @@ def load_vector_store():
         allow_dangerous_deserialization=True
     )
 
-
 if __name__ == "__main__":
-    vectorstore = load_vector_store()
+    vectorstore = create_vector_store()
 
     query = "What is Retrieval Augmented Generation?"
 
