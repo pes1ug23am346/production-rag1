@@ -1,6 +1,80 @@
+# ===========================
+# Python
+# ===========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
 venv/
 .env
-__pycache__/
-*.pyc
+.venv/
+
+# Environment Variables
+.env.*
+!.env.example
+
+# ===========================
+# IDE / Editor
+# ===========================
+.vscode/
+.idea/
+
+# ===========================
+# macOS
+# ===========================
 .DS_Store
-.faiss
+
+# ===========================
+# Logs
+# ===========================
+*.log
+install_log.txt
+
+# ===========================
+# Streamlit
+# ===========================
+.streamlit/secrets.toml
+
+# ===========================
+# Uploaded PDFs
+# Keep the folder but ignore uploaded files
+# ===========================
+data/docs/*.pdf
+!data/docs/.gitkeep
+
+# ===========================
+# Generated FAISS Index
+# Recreated automatically
+# ===========================
+faiss_index/
+
+# ===========================
+# Evaluation Outputs
+# (Uncomment if generated automatically)
+# ===========================
+# evaluation/results/
+
+# ===========================
+# Temporary Files
+# ===========================
+*.tmp
+*.bak
+*.swp
+
+# ===========================
+# Jupyter Notebooks
+# ===========================
+.ipynb_checkpoints/
+
+# ===========================
+# Build / Distribution
+# ===========================
+build/
+dist/
+*.egg-info/
+
+# ===========================
+# OS Files
+# ===========================
+Thumbs.db
