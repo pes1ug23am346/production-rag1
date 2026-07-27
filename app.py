@@ -1,10 +1,14 @@
 import sys
 import os
 
+
 sys.path.append(os.path.abspath("src"))
+
+from pathlib import Path
 
 import streamlit as st
 from rag_chain import ask_docs
+from vector_store import create_vector_store
 
 st.set_page_config(
     page_title="Production RAG Assistant",
@@ -18,36 +22,57 @@ st.set_page_config(
 
 st.title("🤖 Production RAG Assistant")
 
-st.markdown("""
-Ask questions over research papers using:
+st.caption("Upload PDF documents and ask questions with citation-based answers.")
+from pathlib import Path
 
-- Hybrid Retrieval (BM25 + FAISS)
-- Cross-Encoder Reranking
-- Citation-Based Responses
-- Hugging Face + LangChain
-""")
+st.sidebar.divider()
+docs = sorted(Path("data/docs").glob("*.pdf"))
 
-# =========================
-# METRICS
-# =========================
+with st.sidebar.expander(f"📚 Uploaded Documents ({len(docs)})"):
 
-col1, col2, col3 = st.columns(3)
-
-col1.metric("Documents", "3 PDFs")
-col2.metric("Retriever", "BM25 + FAISS")
-col3.metric("Tests", "2/2 Passed")
+    if docs:
+        for doc in docs:
+            st.write(f"📄 {doc.name}")
+    else:
+        st.caption("No documents uploaded.")
 
 # =========================
 # SIDEBAR
 # =========================
+st.sidebar.divider()
+st.sidebar.subheader("📄 Upload PDF")
 
-st.sidebar.header("Project Info")
+uploaded_files = st.sidebar.file_uploader(
+    "Choose PDF(s)",
+    type=["pdf"],
+    accept_multiple_files=True
+)
 
-st.sidebar.success("Hybrid Retrieval")
-st.sidebar.success("Cross Encoder Reranking")
-st.sidebar.success("Citation-Based Answers")
-st.sidebar.success("GitHub Actions CI")
+if uploaded_files:
 
+    save_dir = Path("data/docs")
+    save_dir.mkdir(parents=True, exist_ok=True)
+
+    for uploaded_file in uploaded_files:
+
+        save_path = save_dir / uploaded_file.name
+
+        with open(save_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+
+    with st.spinner("Indexing documents..."):
+        create_vector_store()
+
+    st.sidebar.success(f"{len(uploaded_files)} PDF(s) indexed successfully!")
+
+st.sidebar.header("⚡ Features")
+
+st.sidebar.markdown("""
+- 📚 Multi PDF Support
+- 🔍 Hybrid Retrieval (BM25 + FAISS)
+- 🎯 Cross-Encoder Reranking
+- 📄 Citation-Based Answers
+""")
 # =========================
 # QUESTION INPUT
 # =========================
@@ -76,12 +101,3 @@ if st.button("🔍 Search", use_container_width=True):
 
         st.info(answer)
 
-# =========================
-# FOOTER
-# =========================
-
-st.divider()
-
-st.caption(
-    "Built using FAISS, BM25, Cross-Encoder Reranking, Hugging Face, LangChain and Streamlit"
-)
